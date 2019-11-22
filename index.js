@@ -3,12 +3,18 @@ const { createStore } = require('redux');
 const store = createStore((state = { count: 0 }, action) => {
   switch (action.type) {
     case 'INCREMENT':
+      const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
       return {
-        count: state.count + 1
+        count: state.count + incrementBy
       };
     case 'DECREMENT':
+      const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1;
       return {
-        count: state.count - 1
+        count: state.count - decrementBy
+      };
+    case 'SET':
+      return {
+        count: action.count
       };
     case 'RESET':
       return {
@@ -19,27 +25,31 @@ const store = createStore((state = { count: 0 }, action) => {
   }
 });
 
-console.log(store.getState());
+const unsubcribe = store.subscribe(() => {
+  console.log(store.getState());
+});
 
-// Actions - than an object that gets sents to the store
+store.dispatch({
+  type: 'INCREMENT',
+  incrementBy: 5
+});
 
-// I'd like to increment the count
 store.dispatch({
   type: 'INCREMENT'
 });
-store.dispatch({
-  type: 'INCREMENT'
-});
-console.log(store.getState());
 
-// I'd like to reset the count to zero
 store.dispatch({
   type: 'RESET'
 });
-console.log(store.getState());
 
-// I'd like to decrement the count
+// unsubcribe();
+
 store.dispatch({
-  type: 'DECREMENT'
+  type: 'DECREMENT',
+  decrementBy: 10
 });
-console.log(store.getState());
+
+store.dispatch({
+  type: 'SET',
+  count: 101
+});
